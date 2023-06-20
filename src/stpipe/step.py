@@ -490,10 +490,14 @@ class Step:
                     if hook_results is not None:
                         step_result = hook_results
 
+                # Update meta information
+                results = (
+                    step_result if isinstance(step_result, Iterable) else [step_result]
+                )
                 # The finalize_result hook allows subclasses to add
                 # metadata (like the cal code package version) before
                 # the result is saved.
-                for result in step_result:
+                for result in results:
                     self.finalize_result(result, self._reference_files_used)
 
                 self._reference_files_used = []
