@@ -4,7 +4,7 @@ Step
 import gc
 import os
 import sys
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from contextlib import contextmanager
 from functools import partial
 from os.path import (
@@ -490,16 +490,10 @@ class Step:
                     if hook_results is not None:
                         step_result = hook_results
 
-                # Update meta information
-                if not isinstance(step_result, Sequence):
-                    results = [step_result]
-                else:
-                    results = step_result
-
                 # The finalize_result hook allows subclasses to add
                 # metadata (like the cal code package version) before
                 # the result is saved.
-                for result in results:
+                for result in step_result:
                     self.finalize_result(result, self._reference_files_used)
 
                 self._reference_files_used = []
@@ -507,10 +501,11 @@ class Step:
                 # Save the output file if one was specified
                 if not self.skip and self.save_results:
                     # Setup the save list.
-                    if not isinstance(step_result, (list, tuple)):
-                        results_to_save = [step_result]
-                    else:
-                        results_to_save = step_result
+                    results_to_save = (
+                        step_result
+                        if isinstance(step_result, Iterable)
+                        else [step_result]
+                    )
 
                     for idx, result in enumerate(results_to_save):
                         if len(results_to_save) <= 1:
