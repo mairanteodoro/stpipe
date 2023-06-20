@@ -492,7 +492,7 @@ class Step:
 
                 # Update meta information
                 results = (
-                    step_result if isinstance(step_result, Iterable) else [step_result]
+                    step_result if isinstance(step_result, Sequence) else [step_result]
                 )
                 # The finalize_result hook allows subclasses to add
                 # metadata (like the cal code package version) before
